@@ -1,4 +1,4 @@
-import { Framework } from '../types';
+import { Framework } from '../../../src/types';
 
 export const frameworks: Framework[] = [
   {
