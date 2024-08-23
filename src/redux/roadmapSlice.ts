@@ -30,8 +30,14 @@ const roadmapSlice = createSlice({
     setVCISOTasks: (state, action: PayloadAction<VCISOTask[]>) => {
       state.vcisoTasks = action.payload;
     },
+    updateVCISOTask: (state, action: PayloadAction<VCISOTask>) => {
+      const taskIndex = state.vcisoTasks.findIndex(t => t.Task === action.payload.Task);
+      if (taskIndex !== -1) {
+        state.vcisoTasks[taskIndex] = action.payload;
+      }
+    },
   },
 });
 
-export const { setFrameworks, selectFramework, updateTask, setVCISOTasks } = roadmapSlice.actions;
+export const { setFrameworks, selectFramework, updateTask, setVCISOTasks, updateVCISOTask } = roadmapSlice.actions;
 export default roadmapSlice.reducer;
