@@ -12,7 +12,19 @@ export interface Framework {
   tasks: Task[];
 }
 
+export interface VCISOTask {
+  Task: string;
+  Description: string;
+  Status: string;
+  'Timeline - Start': string;
+  'Timeline - End': string;
+  'Estimated vCISO HR(s)': number;
+  Package: 'Lean' | 'Standard' | 'Premium';
+  Quarter: string;
+}
+
 export interface RoadmapState {
   frameworks: Framework[];
   selectedFramework: string | null;
+  vcisoTasks: VCISOTask[];
 }
