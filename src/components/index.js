@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import CybersecurityRoadmap from './CybersecurityRoadmap';
+import './index.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <CybersecurityRoadmap />
   </React.StrictMode>,
   document.getElementById('root')
 );
