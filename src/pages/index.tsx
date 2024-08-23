@@ -9,7 +9,7 @@ type RoadmapTask = {
   assignee: string;
   status: string;
   risk: string;
-  subControl: string;
+  subControl: number;
 };
 
 type RoadmapData = {
