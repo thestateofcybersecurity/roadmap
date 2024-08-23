@@ -1,14 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: process.env.API_URL + '/:path*', // API_URL should be set to your API server URL
-      },
-    ]
-  },
-}
+import express from 'express';
+import { frameworks } from '../data/frameworks';
+import { vcisoTasks } from '../data/vcisoTasks';
 
-module.exports = nextConfig
+const router = express.Router();
+
+router.get('/frameworks', (req, res) => {
+  res.json(frameworks);
+});
+
+router.get('/vciso-tasks', (req, res) => {
+  res.json(vcisoTasks);
+});
+
+export default router;
