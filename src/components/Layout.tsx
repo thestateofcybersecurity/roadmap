@@ -4,7 +4,7 @@ import { styled } from '@mui/system';
 
 const StyledAppBar = styled(AppBar)`
   background-color: #ffffff;
-  color: #333333;
+  color: #1e3a8a;
   box-shadow: none;
   border-bottom: 1px solid #e0e0e0;
 `;
@@ -23,7 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <>
       <StyledAppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
             Cybersecurity Roadmap Tool
           </Typography>
         </Toolbar>
