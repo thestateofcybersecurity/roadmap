@@ -27,6 +27,12 @@ const TaskTable: React.FC = () => {
     }
   };
 
+  const formatDate = (date: Date | string | undefined): string => {
+    if (!date) return '';
+    if (typeof date === 'string') return date.split('T')[0];
+    return date.toISOString().split('T')[0];
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -53,22 +59,23 @@ const TaskTable: React.FC = () => {
               <TableCell>
                 <TextField
                   type="date"
-                  value={'Timeline - Start' in task ? task['Timeline - Start'] : task.start.toISOString().split('T')[0]}
-                  onChange={(e) => handleTaskChange(task, 'Timeline - Start' in task ? 'Timeline - Start' : 'start', new Date(e.target.value))}
+                  value={formatDate('Timeline - Start' in task ? task['Timeline - Start'] : task.start)}
+                  onChange={(e) => handleTaskChange(task, 'Timeline - Start' in task ? 'Timeline - Start' : 'start', e.target.value)}
                 />
               </TableCell>
               <TableCell>
                 <TextField
                   type="date"
-                  value={'Timeline - End' in task ? task['Timeline - End'] : task.end.toISOString().split('T')[0]}
-                  onChange={(e) => handleTaskChange(task, 'Timeline - End' in task ? 'Timeline - End' : 'end', new Date(e.target.value))}
+                  value={formatDate('Timeline - End' in task ? task['Timeline - End'] : task.end)}
+                  onChange={(e) => handleTaskChange(task, 'Timeline - End' in task ? 'Timeline - End' : 'end', e.target.value)}
                 />
               </TableCell>
               <TableCell>
                 <Select
-                  value={'Status' in task ? task.Status : task.status}
+                  value={'Status' in task ? (task.Status || '') : task.status}
                   onChange={(e) => handleTaskChange(task, 'Status' in task ? 'Status' : 'status', e.target.value)}
                 >
+                  <MenuItem value="">Not Set</MenuItem>
                   <MenuItem value="New">New</MenuItem>
                   <MenuItem value="In Progress">In Progress</MenuItem>
                   <MenuItem value="Completed">Completed</MenuItem>
