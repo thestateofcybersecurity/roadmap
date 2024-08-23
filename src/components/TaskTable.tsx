@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Select, MenuItem } from '@material-ui/core';
 import { RootState } from '../redux/store';
 import { updateTask } from '../redux/roadmapSlice';
-import { Task } from '../types';
+import { Task } from '../../../src/types';
 
 const TaskTable: React.FC = () => {
   const dispatch = useDispatch();
