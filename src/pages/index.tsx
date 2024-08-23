@@ -13,35 +13,23 @@ const IndexPage: React.FC = () => {
   };
 
   return (
-    <>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-        Build Your Cybersecurity Roadmap
-      </Typography>
+    <Box>
       <Box my={4}>
-        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'white', borderRadius: '8px' }}>
-          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
+        <Paper>
+          <Typography variant="h4" component="h1" gutterBottom>
             Select a Framework
           </Typography>
-          <FrameworkSelector />
+          <FrameworkSelector
+            frameworks={frameworks}
+            selectedFramework={selectedFramework}
+            onFrameworkChange={handleFrameworkChange}
+          />
         </Paper>
       </Box>
       <Box my={4}>
-        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'white', borderRadius: '8px' }}>
-          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
-            Roadmap Timeline
-          </Typography>
-          <RoadmapGanttChart />
-        </Paper>
+        {/* Additional content can go here */}
       </Box>
-      <Box my={4}>
-        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'white', borderRadius: '8px' }}>
-          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
-            Tasks
-          </Typography>
-          <TaskTable />
-        </Paper>
-      </Box>
-    </>
+    </Box>
   );
 };
 
