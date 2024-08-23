@@ -2,75 +2,862 @@ import React, { useState } from 'react';
 import { Box, Paper, Typography } from '@mui/material';
 import FrameworkSelector from '../components/FrameworkSelector';
 
-const frameworks = ['NIST CSF', 'CIS', 'ISO 27001']; // Example frameworks
+type RoadmapTask = {
+  task: string;
+  start: string;
+  end: string;
+  assignee: string;
+  status: string;
+  risk: string;
+  subControl: string;
+};
+
+type RoadmapData = {
+  [key: string]: RoadmapTask[];
+};
+
+const frameworks = ['CIS'];
 
 const roadmapData = {
   'CIS': [
-    { task: 'Account Management', start: '', end: '', assignee: 'Parker Brissette', status: 'New', risk: '', subControl: '' },
-    { task: 'Require MFA for Administrative Access', start: '2024-07-15', end: '2024-07-31', assignee: '', status: 'Completed', risk: 'High', subControl: '6.05' },
-    { task: 'Establish an Access Granting Process', start: '2024-09-02', end: '2024-09-13', assignee: '', status: 'New', risk: 'Medium', subControl: '6.01' },
-    { task: 'Establish an Access Revoking Process', start: '2024-09-02', end: '2024-09-13', assignee: '', status: 'New', risk: 'Medium', subControl: '6.02' },
-    { task: 'Establish and Maintain an Inventory of Accounts', start: '2024-09-02', end: '2024-09-16', assignee: '', status: 'New', risk: 'Medium', subControl: '5.01' },
-    { task: 'Ensure All Accounts Have Passwords', start: '2024-09-17', end: '2024-09-30', assignee: '', status: 'New', risk: 'Medium', subControl: '5.02' },
-    { task: 'Enable Password Managers', start: '2024-10-01', end: '2024-10-15', assignee: '', status: 'New', risk: 'Medium', subControl: '5.03' },
-    { task: 'Enforce Password Complexity Requirements', start: '2024-10-16', end: '2024-10-31', assignee: '', status: 'New', risk: 'Medium', subControl: '5.04' },
-    { task: 'Implement Multi-Factor Authentication', start: '2024-11-01', end: '2024-11-15', assignee: '', status: 'New', risk: 'High', subControl: '6.06' },
-    { task: 'Monitor Account Access', start: '2024-11-16', end: '2024-11-30', assignee: '', status: 'New', risk: 'High', subControl: '6.07' },
-    { task: 'Establish and Maintain an Inventory of Authorized Devices', start: '2024-12-01', end: '2024-12-15', assignee: '', status: 'New', risk: 'Medium', subControl: '1.01' },
-    { task: 'Ensure Only Authorized Devices Can Access the Network', start: '2024-12-16', end: '2024-12-31', assignee: '', status: 'New', risk: 'High', subControl: '1.02' },
-    { task: 'Establish and Maintain an Inventory of Authorized Software', start: '2025-01-01', end: '2025-01-15', assignee: '', status: 'New', risk: 'Medium', subControl: '2.01' },
-    { task: 'Ensure Only Authorized Software Is Installed and Can Execute', start: '2025-01-16', end: '2025-01-31', assignee: '', status: 'New', risk: 'High', subControl: '2.02' },
-    { task: 'Monitor and Block Unauthorized Software', start: '2025-02-01', end: '2025-02-15', assignee: '', status: 'New', risk: 'High', subControl: '2.03' },
-    { task: 'Securely Configure All End-User Devices', start: '2025-02-16', end: '2025-02-28', assignee: '', status: 'New', risk: 'Medium', subControl: '4.01' },
-    { task: 'Securely Configure All Network Devices', start: '2025-03-01', end: '2025-03-15', assignee: '', status: 'New', risk: 'Medium', subControl: '4.02' },
-    { task: 'Ensure Security Configurations Are Maintained', start: '2025-03-16', end: '2025-03-31', assignee: '', status: 'New', risk: 'Medium', subControl: '4.03' },
-    { task: 'Continuously Assess Security Configuration', start: '2025-04-01', end: '2025-04-15', assignee: '', status: 'New', risk: 'Medium', subControl: '4.04' },
-    { task: 'Secure All Administrative Accounts', start: '2025-04-16', end: '2025-04-30', assignee: '', status: 'New', risk: 'High', subControl: '6.08' },
-    { task: 'Manage and Track User Accounts', start: '2025-05-01', end: '2025-05-15', assignee: '', status: 'New', risk: 'Medium', subControl: '6.09' },
-    { task: 'Establish and Enforce an Access Control Policy', start: '2025-05-16', end: '2025-05-31', assignee: '', status: 'New', risk: 'High', subControl: '6.10' },
-    { task: 'Ensure Security of End-User Devices', start: '2025-06-01', end: '2025-06-15', assignee: '', status: 'New', risk: 'Medium', subControl: '5.05' },
-    { task: 'Securely Configure Mobile Devices', start: '2025-06-16', end: '2025-06-30', assignee: '', status: 'New', risk: 'Medium', subControl: '5.06' },
-    { task: 'Establish a Secure Network Perimeter', start: '2025-07-01', end: '2025-07-15', assignee: '', status: 'New', risk: 'High', subControl: '3.01' },
-    { task: 'Monitor and Control Network Ports', start: '2025-07-16', end: '2025-07-31', assignee: '', status: 'New', risk: 'High', subControl: '3.02' },
-    { task: 'Implement Web Content Filtering', start: '2025-08-01', end: '2025-08-15', assignee: '', status: 'New', risk: 'Medium', subControl: '3.03' },
-    { task: 'Ensure Encryption of Sensitive Data', start: '2025-08-16', end: '2025-08-31', assignee: '', status: 'New', risk: 'High', subControl: '14.01' },
-    { task: 'Implement a Data Loss Prevention Strategy', start: '2025-09-01', end: '2025-09-15', assignee: '', status: 'New', risk: 'High', subControl: '14.02' },
-    { task: 'Ensure the Security of Wireless Access', start: '2025-09-16', end: '2025-09-30', assignee: '', status: 'New', risk: 'High', subControl: '13.01' },
-    { task: 'Manage Removable Media', start: '2025-10-01', end: '2025-10-15', assignee: '', status: 'New', risk: 'Medium', subControl: '13.02' },
-    { task: 'Ensure Secure Disposal of Data and Devices', start: '2025-10-16', end: '2025-10-31', assignee: '', status: 'New', risk: 'Medium', subControl: '13.03' },
-    { task: 'Conduct Regular Vulnerability Assessments', start: '2025-11-01', end: '2025-11-15', assignee: '', status: 'New', risk: 'High', subControl: '7.01' },
-    { task: 'Remediate Identified Vulnerabilities', start: '2025-11-16', end: '2025-11-30', assignee: '', status: 'New', risk: 'High', subControl: '7.02' },
-    { task: 'Implement Continuous Vulnerability Monitoring', start: '2025-12-01', end: '2025-12-15', assignee: '', status: 'New', risk: 'High', subControl: '7.03' },
-    { task: 'Establish a Security Awareness Program', start: '2025-12-16', end: '2025-12-31', assignee: '', status: 'New', risk: 'Medium', subControl: '17.01' },
-    { task: 'Conduct Regular Phishing Simulations', start: '2026-01-01', end: '2026-01-15', assignee: '', status: 'New', risk: 'Medium', subControl: '17.02' },
-    { task: 'Implement Security Awareness Training', start: '2026-01-16', end: '2026-01-31', assignee: '', status: 'New', risk: 'Medium', subControl: '17.03' },
-    { task: 'Conduct Regular Penetration Testing', start: '2026-02-01', end: '2026-02-15', assignee: '', status: 'New', risk: 'High', subControl: '18.01' },
-    { task: 'Remediate Penetration Testing Findings', start: '2026-02-16', end: '2026-02-29', assignee: '', status: 'New', risk: 'High', subControl: '18.02' },
-    { task: 'Monitor External Service Providers', start: '2026-03-01', end: '2026-03-15', assignee: '', status: 'New', risk: 'High', subControl: '19.01' },
-    { task: 'Establish and Maintain a Security Incident Response Plan', start: '2026-03-16', end: '2026-03-31', assignee: '', status: 'New', risk: 'High', subControl: '19.02' },
-    { task: 'Conduct Regular Incident Response Exercises', start: '2026-04-01', end: '2026-04-15', assignee: '', status: 'New', risk: 'High', subControl: '19.03' },
-    { task: 'Ensure Secure Software Development Practices', start: '2026-04-16', end: '2026-04-30', assignee: '', status: 'New', risk: 'High', subControl: '20.01' },
-    { task: 'Conduct Regular Code Reviews', start: '2026-05-01', end: '2026-05-15', assignee: '', status: 'New', risk: 'High', subControl: '20.02' },
-    { task: 'Ensure Security in the Software Supply Chain', start: '2026-05-16', end: '2026-05-31', assignee: '', status: 'New', risk: 'High', subControl: '20.03' },
-    { task: 'Ensure Secure Cloud Configurations', start: '2026-06-01', end: '2026-06-15', assignee: '', status: 'New', risk: 'High', subControl: '20.04' },
-    { task: 'Monitor and Respond to Emerging Threats', start: '2026-06-16', end: '2026-06-30', assignee: '', status: 'New', risk: 'High', subControl: '21.01' },
-    { task: 'Establish and Enforce Data Protection Policies', start: '2026-07-01', end: '2026-07-15', assignee: '', status: 'New', risk: 'High', subControl: '21.02' },
-    { task: 'Implement Security Analytics and Automation', start: '2026-07-16', end: '2026-07-31', assignee: '', status: 'New', risk: 'High', subControl: '22.01' },
-    { task: 'Establish a Zero Trust Architecture', start: '2026-08-01', end: '2026-08-15', assignee: '', status: 'New', risk: 'High', subControl: '23.01' },
-    { task: 'Ensure Compliance with Regulatory Requirements', start: '2026-08-16', end: '2026-08-31', assignee: '', status: 'New', risk: 'High', subControl: '24.01' },
-    { task: 'Conduct Regular Audits and Assessments', start: '2026-09-01', end: '2026-09-15', assignee: '', status: 'New', risk: 'High', subControl: '24.02' },
-    { task: 'Implement Security Metrics and Reporting', start: '2026-09-16', end: '2026-09-30', assignee: '', status: 'New', risk: 'Medium', subControl: '25.01' },
-    { task: 'Review and Update Security Policies Regularly', start: '2026-10-01', end: '2026-10-15', assignee: '', status: 'New', risk: 'Medium', subControl: '25.02' },
-    { task: 'Conduct Regular Third-Party Risk Assessments', start: '2026-10-16', end: '2026-10-31', assignee: '', status: 'New', risk: 'High', subControl: '26.01' },
-    { task: 'Monitor and Enforce Third-Party Security Compliance', start: '2026-11-01', end: '2026-11-15', assignee: '', status: 'New', risk: 'High', subControl: '26.02' },
-    { task: 'Establish and Maintain an Insider Threat Program', start: '2026-11-16', end: '2026-11-30', assignee: '', status: 'New', risk: 'High', subControl: '27.01' },
-    { task: 'Implement Secure Communication Channels', start: '2026-12-01', end: '2026-12-15', assignee: '', status: 'New', risk: 'High', subControl: '27.02' },
-    { task: 'Ensure the Security of Critical Infrastructure', start: '2026-12-16', end: '2026-12-31', assignee: '', status: 'New', risk: 'High', subControl: '28.01' },
-    { task: 'Conduct Regular Business Continuity Planning', start: '2027-01-01', end: '2027-01-15', assignee: '', status: 'New', risk: 'High', subControl: '29.01' },
-    { task: 'Implement and Test Disaster Recovery Plans', start: '2027-01-16', end: '2027-01-31', assignee: '', status: 'New', risk: 'High', subControl: '29.02' },
-    { task: 'Establish and Maintain a Cybersecurity Workforce Program', start: '2027-02-01', end: '2027-02-15', assignee: '', status: 'New', risk: 'Medium', subControl: '30.01' },
-    { task: 'Ensure Continuous Security Education and Training', start: '2027-02-16', end: '2027-02-28', assignee: '', status: 'New', risk: 'Medium', subControl: '30.02' },
-  ]
+    {
+        "subControl":  "",
+        "risk":  "",
+        "assignee":  "Parker Brissette",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Account Management"
+    },
+    {
+        "subControl":  6.05,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "2024-07-15",
+        "end":  "2024-07-31",
+        "status":  "Completed",
+        "task":  "Require MFA for Administrative Access"
+    },
+    {
+        "subControl":  6.01,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-02",
+        "end":  "2024-09-13",
+        "status":  "New",
+        "task":  "Establish an Access Granting Process"
+    },
+    {
+        "subControl":  6.02,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-02",
+        "end":  "2024-09-13",
+        "status":  "New",
+        "task":  "Establish an Access Revoking Process"
+    },
+    {
+        "subControl":  5.01,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-02",
+        "end":  "2024-09-16",
+        "status":  "New",
+        "task":  "Establish and Maintain an Inventory of Accounts"
+    },
+    {
+        "subControl":  4.07,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-10-01",
+        "end":  "2024-10-18",
+        "status":  "New",
+        "task":  "Manage Default Accounts on Enterprise Assets and Software"
+    },
+    {
+        "subControl":  6.03,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-10-21",
+        "end":  "2024-11-01",
+        "status":  "New",
+        "task":  "Require MFA for Externally-Exposed Applications"
+    },
+    {
+        "subControl":  6.04,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-10-21",
+        "end":  "2024-11-01",
+        "status":  "New",
+        "task":  "Require MFA for Remote Network Access"
+    },
+    {
+        "subControl":  5.04,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-10-21",
+        "end":  "2024-11-01",
+        "status":  "New",
+        "task":  "Restrict Administrator Privileges to Dedicated Administrator Accounts"
+    },
+    {
+        "subControl":  5.02,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-10-21",
+        "end":  "2024-11-01",
+        "status":  "New",
+        "task":  "Use Unique Passwords"
+    },
+    {
+        "subControl":  5.03,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "2024-11-01",
+        "end":  "2024-11-01",
+        "status":  "New",
+        "task":  "Disable Dormant Accounts"
+    },
+    {
+        "subControl":  6.07,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Centralize Access Control"
+    },
+    {
+        "subControl":  5.06,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Centralize Account Management"
+    },
+    {
+        "subControl":  12.05,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Centralize Network Authentication, Authorization, and Auditing (AAA)"
+    },
+    {
+        "subControl":  6.08,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Define and Maintain Role-Based Access Control"
+    },
+    {
+        "subControl":  6.06,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Establish and Maintain an Inventory of Authentication and Authorization Systems"
+    },
+    {
+        "subControl":  5.05,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Establish and Maintain an Inventory of Service Accounts"
+    },
+    {
+        "subControl":  12.08,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Establish and Maintain Dedicated Computing Resources for All Administrative Work"
+    },
+    {
+        "subControl":  13.05,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Manage Access Control for Remote Assets"
+    },
+    {
+        "subControl":  "",
+        "risk":  "",
+        "assignee":  "Parker Brissette",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Asset and Software Management"
+    },
+    {
+        "subControl":  2.03,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "2024-07-01",
+        "end":  "2024-07-15",
+        "status":  "In Progress",
+        "task":  "Address Unauthorized Software"
+    },
+    {
+        "subControl":  9.01,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "2024-07-01",
+        "end":  "2024-07-15",
+        "status":  "In Progress",
+        "task":  "Ensure Use of Only Fully Supported Browsers and Email Clients"
+    },
+    {
+        "subControl":  1.02,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-08-01",
+        "end":  "2024-08-30",
+        "status":  "In Progress",
+        "task":  "Address Unauthorized Assets"
+    },
+    {
+        "subControl":  2.02,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-08-01",
+        "end":  "2024-08-30",
+        "status":  "In Progress",
+        "task":  "Ensure Authorized Software is Currently Supported"
+    },
+    {
+        "subControl":  2.01,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-02",
+        "end":  "2024-09-16",
+        "status":  "New",
+        "task":  "Establish and Maintain a Software Inventory"
+    },
+    {
+        "subControl":  1.01,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-02",
+        "end":  "2024-09-16",
+        "status":  "New",
+        "task":  "Establish and Maintain Detailed Asset Inventory"
+    },
+    {
+        "subControl":  4.06,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-10-21",
+        "end":  "2024-11-01",
+        "status":  "New",
+        "task":  "Securely Manage Enterprise Assets and Software"
+    },
+    {
+        "subControl":  9.02,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "2024-12-02",
+        "end":  "2024-12-16",
+        "status":  "New",
+        "task":  "Use DNS Filtering Services"
+    },
+    {
+        "subControl":  2.06,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Allowlist Authorized Libraries"
+    },
+    {
+        "subControl":  2.07,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Allowlist Authorized Scripts"
+    },
+    {
+        "subControl":  2.05,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Allowlist Authorized Software"
+    },
+    {
+        "subControl":  9.06,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Block Unnecessary File Types"
+    },
+    {
+        "subControl":  4.09,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Configure Trusted DNS Servers on Enterprise Assets"
+    },
+    {
+        "subControl":  12.02,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Establish and Maintain a Secure Network Architecture"
+    },
+    {
+        "subControl":  12.04,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Establish and Maintain Architecture Diagram(s)"
+    },
+    {
+        "subControl":  9.03,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Maintain and Enforce Network-Based URL Filters"
+    },
+    {
+        "subControl":  9.04,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Restrict Unnecessary or Unauthorized Browser and Email Client Extensions"
+    },
+    {
+        "subControl":  4.08,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software"
+    },
+    {
+        "subControl":  1.05,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Use a Passive Asset Discovery Tool"
+    },
+    {
+        "subControl":  1.04,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Use Dynamic Host Configuration Protocol (DHCP) Logging to Update Enterprise Asset Inventory"
+    },
+    {
+        "subControl":  1.03,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Utilize an Active Discovery Tool"
+    },
+    {
+        "subControl":  2.04,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Utilize Automated Software Inventory Tools"
+    },
+    {
+        "subControl":  "",
+        "risk":  "",
+        "assignee":  "Parker Brissette",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Data Management"
+    },
+    {
+        "subControl":  3.04,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "2024-07-15",
+        "end":  "2024-08-09",
+        "status":  "In Progress",
+        "task":  "Enforce Data Retention"
+    },
+    {
+        "subControl":  3.05,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "2024-07-15",
+        "end":  "2024-08-09",
+        "status":  "In Progress",
+        "task":  "Securely Dispose of Data"
+    },
+    {
+        "subControl":  3.03,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-02",
+        "end":  "2024-09-17",
+        "status":  "New",
+        "task":  "Configure Data Access Control Lists"
+    },
+    {
+        "subControl":  3.02,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-16",
+        "end":  "2024-09-27",
+        "status":  "New",
+        "task":  "Establish and Maintain a Data Inventory"
+    },
+    {
+        "subControl":  3.01,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-16",
+        "end":  "2024-09-27",
+        "status":  "New",
+        "task":  "Establish and Maintain a Data Management Process"
+    },
+    {
+        "subControl":  11.01,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "2024-11-18",
+        "end":  "2024-11-29",
+        "status":  "New",
+        "task":  "Establish and Maintain a Data Recovery Process "
+    },
+    {
+        "subControl":  11.04,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "2024-11-18",
+        "end":  "2024-11-29",
+        "status":  "New",
+        "task":  "Establish and Maintain an Isolated Instance of Recovery Data "
+    },
+    {
+        "subControl":  11.02,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "2024-12-02",
+        "end":  "2024-12-16",
+        "status":  "New",
+        "task":  "Perform Automated Backups "
+    },
+    {
+        "subControl":  11.03,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "2024-12-02",
+        "end":  "2024-12-16",
+        "status":  "New",
+        "task":  "Protect Recovery Data"
+    },
+    {
+        "subControl":  3.13,
+        "risk":  "Critical",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Deploy a Data Loss Prevention Solution"
+    },
+    {
+        "subControl":  3.08,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Document Data Flows"
+    },
+    {
+        "subControl":  3.09,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Encrypt Data on Removable Media"
+    },
+    {
+        "subControl":  3.11,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Encrypt Sensitive Data at Rest"
+    },
+    {
+        "subControl":  3.1,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Encrypt Sensitive Data in Transit"
+    },
+    {
+        "subControl":  3.07,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Establish and Maintain a Data Classification Scheme"
+    },
+    {
+        "subControl":  3.12,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Segment Data Processing and Storage Based on Sensitivity"
+    },
+    {
+        "subControl":  11.05,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Test Data Recovery"
+    },
+    {
+        "subControl":  "",
+        "risk":  "",
+        "assignee":  "Parker Brissette",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Endpoint Management"
+    },
+    {
+        "subControl":  4.03,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "2024-07-01",
+        "end":  "2024-07-15",
+        "status":  "In Progress",
+        "task":  "Configure Automatic Session Locking on Enterprise Assets"
+    },
+    {
+        "subControl":  4.05,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "2024-07-01",
+        "end":  "2024-07-15",
+        "status":  "In Progress",
+        "task":  "Implement and Manage a Firewall on End-User Devices"
+    },
+    {
+        "subControl":  10.03,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-08-01",
+        "end":  "2024-08-30",
+        "status":  "In Progress",
+        "task":  "Disable Autorun and Autoplay for Removable Media"
+    },
+    {
+        "subControl":  3.06,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-08-01",
+        "end":  "2024-08-30",
+        "status":  "Completed",
+        "task":  "Encrypt Data on End-User Devices"
+    },
+    {
+        "subControl":  4.01,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-02",
+        "end":  "2024-09-16",
+        "status":  "New",
+        "task":  "Establish and Maintain a Secure Configuration Process"
+    },
+    {
+        "subControl":  4.02,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-09-02",
+        "end":  "2024-09-16",
+        "status":  "New",
+        "task":  "Establish and Maintain a Secure Configuration Process for Network Infrastructure"
+    },
+    {
+        "subControl":  4.04,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "2024-10-01",
+        "end":  "2024-10-18",
+        "status":  "New",
+        "task":  "Implement and Manage a Firewall on Servers"
+    },
+    {
+        "subControl":  10.02,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "2024-11-01",
+        "end":  "2024-11-15",
+        "status":  "New",
+        "task":  "Configure Automatic Anti-Malware Signature Updates"
+    },
+    {
+        "subControl":  10.01,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "2024-11-01",
+        "end":  "2024-11-01",
+        "status":  "New",
+        "task":  "Deploy and Maintain Anti-Malware Software"
+    },
+    {
+        "subControl":  10.06,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Centrally Manage Anti-Malware Software"
+    },
+    {
+        "subControl":  10.04,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Configure Automatic Anti-Malware Scanning of Removable Media"
+    },
+    {
+        "subControl":  13.02,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Deploy a Host-Based Intrusion Detection Solution"
+    },
+    {
+        "subControl":  13.07,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Deploy a Host-Based Intrusion Prevention Solution"
+    },
+    {
+        "subControl":  13.03,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Deploy a Network Intrusion Detection Solution"
+    },
+    {
+        "subControl":  13.08,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Deploy a Network Intrusion Prevention Solution"
+    },
+    {
+        "subControl":  9.07,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Deploy and Maintain Email Server Anti-Malware Protections"
+    },
+    {
+        "subControl":  13.09,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Deploy Port-Level Access Control"
+    },
+    {
+        "subControl":  10.05,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Enable Anti-Exploitation Features"
+    },
+    {
+        "subControl":  4.1,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Enforce Automatic Device Lockout on Portable End-User Devices"
+    },
+    {
+        "subControl":  4.11,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Enforce Remote Wipe Capability on Portable End-User Devices"
+    },
+    {
+        "subControl":  12.07,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Ensure Remote Devices Utilize a VPN and are Connecting to an Enterprise’s AAA Infrastructure"
+    },
+    {
+        "subControl":  13.1,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Perform Application Layer Filtering"
+    },
+    {
+        "subControl":  13.04,
+        "risk":  "High",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Perform Traffic Filtering Between Network Segments"
+    },
+    {
+        "subControl":  12.03,
+        "risk":  "Medium",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Securely Manage Network Infrastructure"
+    },
+    {
+        "subControl":  4.12,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Separate Enterprise Workspaces on Mobile End-User Devices"
+    },
+    {
+        "subControl":  8.04,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Standardize Time Synchronization"
+    },
+    {
+        "subControl":  10.07,
+        "risk":  "Low",
+        "assignee":  "",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Use Behavior-Based Anti-Malware Software"
+    },
+    {
+        "subControl":  "",
+        "risk":  "",
+        "assignee":  "Parker Brissette",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Incident Management"
+    },
+    {
+        "subControl":  "",
+        "risk":  "",
+        "assignee":  "Parker Brissette",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Policies and Procedures"
+    },
+    {
+        "subControl":  "",
+        "risk":  "",
+        "assignee":  "Parker Brissette",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Security Awareness"
+    },
+    {
+        "subControl":  "",
+        "risk":  "",
+        "assignee":  "Parker Brissette",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Vendor Management"
+    },
+    {
+        "subControl":  "",
+        "risk":  "",
+        "assignee":  "Parker Brissette",
+        "start":  "",
+        "end":  "",
+        "status":  "New",
+        "task":  "Vulnerability Management"
+    }
+]
 };
     
 const IndexPage: React.FC = () => {
