@@ -1,4 +1,4 @@
-import { VCISOTask } from '../types';
+import { VCISOTask } from '../../../src/types';
 
 export const vcisoTasks: VCISOTask[] = [
   {
