@@ -24,27 +24,23 @@ This project is a web-based tool for creating and managing cybersecurity roadmap
    cd cybersecurity-roadmap-tool
    ```
 
-2. Install dependencies for both client and server:
+2. Install dependencies:
    ```
-   cd client && npm install
-   cd ../server && npm install
+   npm install
    ```
 
 ### Running the application
 
-1. Start the server:
+1. Start the development server:
    ```
-   cd server
    npm run dev
    ```
 
-2. In a new terminal, start the client:
-   ```
-   cd client
-   npm start
-   ```
+2. Open your browser and navigate to `http://localhost:3000`
 
-3. Open your browser and navigate to `http://localhost:3000`
+## Deployment
+
+This project is set up for deployment on Vercel. Simply push your changes to the main branch, and Vercel will automatically deploy your updates.
 
 ## Contributing
 
