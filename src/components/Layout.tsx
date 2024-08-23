@@ -1,6 +1,7 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Container, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Container, Box, Button } from '@mui/material';
 import { styled } from '@mui/system';
+import Link from 'next/link';
 
 const StyledAppBar = styled(AppBar)`
   background-color: #ffffff;
@@ -26,6 +27,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
             Cybersecurity Roadmap Tool
           </Typography>
+          <Link href="/" passHref>
+            <Button color="inherit">Home</Button>
+          </Link>
+          <Link href="/vciso-roadmap" passHref>
+            <Button color="inherit">vCISO Roadmap</Button>
+          </Link>
         </Toolbar>
       </StyledAppBar>
       <StyledContainer maxWidth="lg">
