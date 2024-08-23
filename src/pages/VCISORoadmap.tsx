@@ -3,8 +3,10 @@ import { Typography, Box, Paper, Slider, Button, RadioGroup, FormControlLabel, R
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { setVCISOTasks } from '../redux/roadmapSlice';
+import { fetchVCISOTasks } from '../utils/api';
 import RoadmapGanttChart from '../components/RoadmapGanttChart';
 import TaskTable from '../components/TaskTable';
+import { VCISOTask } from '../types';
 
 const packages = [
   { name: 'Lean', avgHours: 20 },
@@ -17,16 +19,19 @@ const VCISORadmap: React.FC = () => {
   const { vcisoTasks } = useSelector((state: RootState) => state.roadmap);
   const [monthlyHours, setMonthlyHours] = useState<number>(40);
   const [selectedPackage, setSelectedPackage] = useState<string>('');
+  const [allTasks, setAllTasks] = useState<VCISOTask[]>([]);
 
   useEffect(() => {
-    // Fetch vCISO tasks from API or load from state
-    // This is a placeholder and should be replaced with actual data fetching
-    const fetchTasks = async () => {
-      // const tasks = await fetchVCISOTasks();
-      // dispatch(setVCISOTasks(tasks));
+    const loadTasks = async () => {
+      try {
+        const tasks = await fetchVCISOTasks();
+        setAllTasks(tasks);
+      } catch (error) {
+        console.error('Failed to fetch vCISO tasks:', error);
+      }
     };
-    fetchTasks();
-  }, [dispatch]);
+    loadTasks();
+  }, []);
 
   const handleHoursChange = (event: Event, newValue: number | number[]) => {
     setMonthlyHours(newValue as number);
@@ -39,19 +44,34 @@ const VCISORadmap: React.FC = () => {
   };
 
   const generateRoadmap = () => {
-    // Logic to generate roadmap based on monthlyHours or selectedPackage
-    // This is a placeholder and should be replaced with actual logic
-    const selectedTasks = vcisoTasks.filter(task => {
+    const selectedTasks = allTasks.filter(task => {
       if (selectedPackage) {
         return task.Package === selectedPackage;
       } else {
-        // Implement logic to select tasks based on monthlyHours
-        // This is a simplified example
-        return task['Estimated vCISO HR(s)'] <= monthlyHours * 3; // Assuming 3 months per quarter
+        const quarterHours = monthlyHours * 3; // Assuming 3 months per quarter
+        const taskHours = task['Estimated vCISO HR(s)'];
+        return taskHours <= quarterHours * 1.2 && taskHours >= quarterHours * 0.8; // 20% variance
       }
     });
 
-    dispatch(setVCISOTasks(selectedTasks));
+    // Group tasks by quarter
+    const groupedTasks = selectedTasks.reduce((acc, task) => {
+      if (!acc[task.Quarter]) {
+        acc[task.Quarter] = [];
+      }
+      acc[task.Quarter].push(task);
+      return acc;
+    }, {} as Record<string, VCISOTask[]>);
+
+    // Sort tasks within each quarter by estimated hours
+    Object.keys(groupedTasks).forEach(quarter => {
+      groupedTasks[quarter].sort((a, b) => b['Estimated vCISO HR(s)'] - a['Estimated vCISO HR(s)']);
+    });
+
+    // Flatten the grouped tasks back into an array
+    const sortedTasks = Object.values(groupedTasks).flat();
+
+    dispatch(setVCISOTasks(sortedTasks));
   };
 
   return (
