@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RoadmapState, Framework, Task } from '../types';
+import { RoadmapState, Framework, Task, VCISOTask } from '../types';
 
 const initialState: RoadmapState = {
   frameworks: [],
   selectedFramework: null,
+  vcisoTasks: [],
 };
 
 const roadmapSlice = createSlice({
@@ -26,8 +27,11 @@ const roadmapSlice = createSlice({
         }
       }
     },
+    setVCISOTasks: (state, action: PayloadAction<VCISOTask[]>) => {
+      state.vcisoTasks = action.payload;
+    },
   },
 });
 
-export const { setFrameworks, selectFramework, updateTask } = roadmapSlice.actions;
+export const { setFrameworks, selectFramework, updateTask, setVCISOTasks } = roadmapSlice.actions;
 export default roadmapSlice.reducer;
