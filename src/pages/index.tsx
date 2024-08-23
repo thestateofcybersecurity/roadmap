@@ -18,7 +18,7 @@ type RoadmapData = {
 
 const frameworks = ['CIS'];
 
-const roadmapData = {
+const roadmapData: RoadmapData = {
   'CIS': [
     {
         "subControl":  "",
@@ -882,7 +882,7 @@ const IndexPage: React.FC = () => {
         </Paper>
       </Box>
       <Box my={4}>
-        {selectedFramework && (
+        {selectedFramework && roadmapData[selectedFramework] && (
           <Paper>
             <Typography variant="h5" component="h2" gutterBottom>
               {selectedFramework} Roadmap
