@@ -14,19 +14,21 @@ const RoadmapGanttChart: React.FC = () => {
 
   const tasks = selectedFramework ? selectedTasks : vcisoTasks;
 
+  const safeDate = (dateString: string | undefined): number | undefined => {
+    if (!dateString) return undefined;
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? undefined : date.getTime();
+  };
+
   const data = tasks.map(task => {
     const isVCISOTask = 'Task' in task;
     return {
       name: isVCISOTask ? (task as VCISOTask).Task : (task as Task).name,
       start: isVCISOTask 
-        ? (task as VCISOTask)['Timeline - Start'] 
-          ? new Date((task as VCISOTask)['Timeline - Start']).getTime() 
-          : undefined
+        ? safeDate((task as VCISOTask)['Timeline - Start'])
         : (task as Task).start.getTime(),
       end: isVCISOTask
-        ? (task as VCISOTask)['Timeline - End']
-          ? new Date((task as VCISOTask)['Timeline - End']).getTime()
-          : undefined
+        ? safeDate((task as VCISOTask)['Timeline - End'])
         : (task as Task).end.getTime(),
       status: isVCISOTask ? (task as VCISOTask).Status : (task as Task).status,
     };
