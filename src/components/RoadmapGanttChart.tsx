@@ -5,21 +5,23 @@ import { RootState } from '../redux/store';
 import { Typography, Box } from '@mui/material';
 
 const RoadmapGanttChart: React.FC = () => {
-  const { frameworks, selectedFramework } = useSelector((state: RootState) => state.roadmap);
+  const { frameworks, selectedFramework, vcisoTasks } = useSelector((state: RootState) => state.roadmap);
 
   const selectedTasks = selectedFramework
     ? frameworks.find(f => f.id === selectedFramework)?.tasks || []
     : [];
 
-  const data = selectedTasks.map(task => ({
-    name: task.name,
-    start: task.start.getTime(),
-    end: task.end.getTime(),
-    status: task.status,
+  const tasks = selectedFramework ? selectedTasks : vcisoTasks;
+
+  const data = tasks.map(task => ({
+    name: 'Task' in task ? task.Task : task.name,
+    start: 'Timeline - Start' in task ? new Date(task['Timeline - Start']).getTime() : task.start.getTime(),
+    end: 'Timeline - End' in task ? new Date(task['Timeline - End']).getTime() : task.end.getTime(),
+    status: 'Status' in task ? task.Status : task.status,
   }));
 
   if (data.length === 0) {
-    return <Typography>Please select a framework to view the roadmap.</Typography>;
+    return <Typography>Please select a framework or generate a vCISO roadmap to view the chart.</Typography>;
   }
 
   return (
