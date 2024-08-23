@@ -14,24 +14,26 @@ const RoadmapGanttChart: React.FC = () => {
 
   const tasks = selectedFramework ? selectedTasks : vcisoTasks;
 
-  const safeDate = (dateString: string | undefined): number | undefined => {
-    if (!dateString) return undefined;
-    const date = new Date(dateString);
-    return isNaN(date.getTime()) ? undefined : date.getTime();
+  const isVCISOTask = (task: Task | VCISOTask): task is VCISOTask => {
+    return 'Task' in task;
   };
 
   const data = tasks.map(task => {
-    const isVCISOTask = 'Task' in task;
-    return {
-      name: isVCISOTask ? (task as VCISOTask).Task : (task as Task).name,
-      start: isVCISOTask 
-        ? safeDate((task as VCISOTask)['Timeline - Start'])
-        : (task as Task).start.getTime(),
-      end: isVCISOTask
-        ? safeDate((task as VCISOTask)['Timeline - End'])
-        : (task as Task).end.getTime(),
-      status: isVCISOTask ? (task as VCISOTask).Status : (task as Task).status,
-    };
+    if (isVCISOTask(task)) {
+      return {
+        name: task.Task,
+        start: task['Timeline - Start'] ? new Date(task['Timeline - Start']).getTime() : undefined,
+        end: task['Timeline - End'] ? new Date(task['Timeline - End']).getTime() : undefined,
+        status: task.Status,
+      };
+    } else {
+      return {
+        name: task.name,
+        start: task.start.getTime(),
+        end: task.end.getTime(),
+        status: task.status,
+      };
+    }
   });
 
   if (data.length === 0) {
