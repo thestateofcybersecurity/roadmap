@@ -9,19 +9,8 @@ const IndexPage: React.FC = () => {
 
   const handleFrameworkChange = (framework: string) => {
     setSelectedFramework(framework);
-
-  useEffect(() => {
-    const loadFrameworks = async () => {
-      try {
-        const frameworks = await fetchFrameworks();
-        dispatch(setFrameworks(frameworks));
-      } catch (error) {
-        console.error('Failed to fetch frameworks:', error);
-      }
-    };
-
-    loadFrameworks();
-  }, [dispatch]);
+    // Add any additional logic needed when the framework is selected
+  };
 
   return (
     <>
