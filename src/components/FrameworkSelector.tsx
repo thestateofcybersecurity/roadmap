@@ -1,20 +1,25 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { RootState } from '../redux/store';
-import { selectFramework } from '../redux/roadmapSlice';
+import { SelectChangeEvent } from '@mui/material/Select';
 
-const FrameworkSelector: React.FC = () => {
-  const dispatch = useDispatch();
-  const { frameworks, selectedFramework } = useSelector((state: RootState) => state.roadmap);
+type FrameworkSelectorProps = {
+  frameworks: string[];
+  selectedFramework: string | null;
+  onFrameworkChange: (framework: string) => void;
+};
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch(selectFramework(event.target.value as string));
+const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
+  frameworks,
+  selectedFramework,
+  onFrameworkChange,
+}) => {
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    onFrameworkChange(event.target.value);
   };
 
   return (
-    <FormControl fullWidth variant="outlined">
-      <InputLabel id="framework-select-label">Select Framework</InputLabel>
+    <FormControl fullWidth>
+      <InputLabel id="framework-select-label">Framework</InputLabel>
       <Select
         labelId="framework-select-label"
         id="framework-select"
@@ -23,8 +28,8 @@ const FrameworkSelector: React.FC = () => {
         label="Select Framework"
       >
         {frameworks.map((framework) => (
-          <MenuItem key={framework.id} value={framework.id}>
-            {framework.name}
+          <MenuItem key={framework} value={framework}>
+            {framework}
           </MenuItem>
         ))}
       </Select>
