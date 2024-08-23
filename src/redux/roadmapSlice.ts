@@ -5,7 +5,7 @@ import FrameworkSelector from '../components/FrameworkSelector';
 import RoadmapGanttChart from '../components/RoadmapGanttChart';
 import TaskTable from '../components/TaskTable';
 import { fetchFrameworks } from '../utils/api';
-import { setFrameworks } from '../redux/roadmapSlice';
+import { selectFrameworks } from '../redux/roadmapSlice';
 
 const Home: React.FC = () => {
   const dispatch = useDispatch();
