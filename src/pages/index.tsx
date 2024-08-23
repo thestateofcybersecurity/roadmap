@@ -21,15 +21,6 @@ const frameworks = ['CIS'];
 const roadmapData: RoadmapData = {
   'CIS': [
     {
-        "subControl":  "",
-        "risk":  "",
-        "assignee":  "Parker Brissette",
-        "start":  "",
-        "end":  "",
-        "status":  "New",
-        "task":  "Account Management"
-    },
-    {
         "subControl":  6.05,
         "risk":  "High",
         "assignee":  "",
@@ -190,15 +181,6 @@ const roadmapData: RoadmapData = {
         "end":  "",
         "status":  "New",
         "task":  "Manage Access Control for Remote Assets"
-    },
-    {
-        "subControl":  "",
-        "risk":  "",
-        "assignee":  "Parker Brissette",
-        "start":  "",
-        "end":  "",
-        "status":  "New",
-        "task":  "Asset and Software Management"
     },
     {
         "subControl":  2.03,
@@ -399,15 +381,6 @@ const roadmapData: RoadmapData = {
         "task":  "Utilize Automated Software Inventory Tools"
     },
     {
-        "subControl":  "",
-        "risk":  "",
-        "assignee":  "Parker Brissette",
-        "start":  "",
-        "end":  "",
-        "status":  "New",
-        "task":  "Data Management"
-    },
-    {
         "subControl":  3.04,
         "risk":  "High",
         "assignee":  "",
@@ -559,15 +532,6 @@ const roadmapData: RoadmapData = {
         "end":  "",
         "status":  "New",
         "task":  "Test Data Recovery"
-    },
-    {
-        "subControl":  "",
-        "risk":  "",
-        "assignee":  "Parker Brissette",
-        "start":  "",
-        "end":  "",
-        "status":  "New",
-        "task":  "Endpoint Management"
     },
     {
         "subControl":  4.03,
@@ -811,51 +775,6 @@ const roadmapData: RoadmapData = {
         "end":  "",
         "status":  "New",
         "task":  "Use Behavior-Based Anti-Malware Software"
-    },
-    {
-        "subControl":  "",
-        "risk":  "",
-        "assignee":  "Parker Brissette",
-        "start":  "",
-        "end":  "",
-        "status":  "New",
-        "task":  "Incident Management"
-    },
-    {
-        "subControl":  "",
-        "risk":  "",
-        "assignee":  "Parker Brissette",
-        "start":  "",
-        "end":  "",
-        "status":  "New",
-        "task":  "Policies and Procedures"
-    },
-    {
-        "subControl":  "",
-        "risk":  "",
-        "assignee":  "Parker Brissette",
-        "start":  "",
-        "end":  "",
-        "status":  "New",
-        "task":  "Security Awareness"
-    },
-    {
-        "subControl":  "",
-        "risk":  "",
-        "assignee":  "Parker Brissette",
-        "start":  "",
-        "end":  "",
-        "status":  "New",
-        "task":  "Vendor Management"
-    },
-    {
-        "subControl":  "",
-        "risk":  "",
-        "assignee":  "Parker Brissette",
-        "start":  "",
-        "end":  "",
-        "status":  "New",
-        "task":  "Vulnerability Management"
     }
 ]
 };
