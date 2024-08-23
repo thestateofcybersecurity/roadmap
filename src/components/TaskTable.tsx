@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Select, MenuItem } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Select, MenuItem } from '@mui/material';
 import { RootState } from '../redux/store';
 import { updateTask } from '../redux/roadmapSlice';
-import { Task } from '../../../src/types';
+import { Task } from '../types';
 
 const TaskTable: React.FC = () => {
   const dispatch = useDispatch();
@@ -37,6 +37,7 @@ const TaskTable: React.FC = () => {
             <TableRow key={task.id}>
               <TableCell>
                 <TextField
+                  fullWidth
                   value={task.name}
                   onChange={(e) => handleTaskChange(task.id, 'name', e.target.value)}
                 />
