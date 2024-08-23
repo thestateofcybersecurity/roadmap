@@ -7,6 +7,8 @@ import Layout from '../components/Layout';
 import { store } from '../redux/store';
 import '../styles/globals.css';
 
+import VCISORoadmap from '../pages/VCISORoadmap'; // Importing the new vCISO Roadmap page
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -34,12 +36,17 @@ const theme = createTheme({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  // Optionally, you can conditionally render the VCISORoadmap if needed based on props or other logic.
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Layout>
+          {/* Rendering the main component */}
           <Component {...pageProps} />
+          {/* Optionally rendering the vCISO Roadmap */}
+          {/* You can conditionally render it based on the route or other conditions */}
+          {/* <VCISORoadmap /> */}
         </Layout>
       </ThemeProvider>
     </Provider>
