@@ -33,6 +33,22 @@ const TaskTable: React.FC = () => {
     return date.toISOString().split('T')[0];
   };
 
+  const getStartDate = (task: Task | VCISOTask): string => {
+    if ('Timeline - Start' in task) {
+      return formatDate(task['Timeline - Start']);
+    } else {
+      return formatDate(task.start);
+    }
+  };
+
+  const getEndDate = (task: Task | VCISOTask): string => {
+    if ('Timeline - End' in task) {
+      return formatDate(task['Timeline - End']);
+    } else {
+      return formatDate(task.end);
+    }
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -59,14 +75,14 @@ const TaskTable: React.FC = () => {
               <TableCell>
                 <TextField
                   type="date"
-                  value={formatDate('Timeline - Start' in task ? task['Timeline - Start'] : task.start)}
+                  value={getStartDate(task)}
                   onChange={(e) => handleTaskChange(task, 'Timeline - Start' in task ? 'Timeline - Start' : 'start', e.target.value)}
                 />
               </TableCell>
               <TableCell>
                 <TextField
                   type="date"
-                  value={formatDate('Timeline - End' in task ? task['Timeline - End'] : task.end)}
+                  value={getEndDate(task)}
                   onChange={(e) => handleTaskChange(task, 'Timeline - End' in task ? 'Timeline - End' : 'end', e.target.value)}
                 />
               </TableCell>
