@@ -49,6 +49,10 @@ const TaskTable: React.FC = () => {
     }
   };
 
+  const isVCISOTask = (task: Task | VCISOTask): task is VCISOTask => {
+    return 'Task' in task;
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -64,32 +68,32 @@ const TaskTable: React.FC = () => {
         </TableHead>
         <TableBody>
           {tasks.map((task) => (
-            <TableRow key={'id' in task ? task.id : task.Task}>
+            <TableRow key={isVCISOTask(task) ? task.Task : task.id}>
               <TableCell>
                 <TextField
                   fullWidth
-                  value={'Task' in task ? task.Task : task.name}
-                  onChange={(e) => handleTaskChange(task, 'Task' in task ? 'Task' : 'name', e.target.value)}
+                  value={isVCISOTask(task) ? task.Task : task.name}
+                  onChange={(e) => handleTaskChange(task, isVCISOTask(task) ? 'Task' : 'name', e.target.value)}
                 />
               </TableCell>
               <TableCell>
                 <TextField
                   type="date"
                   value={getStartDate(task)}
-                  onChange={(e) => handleTaskChange(task, 'Timeline - Start' in task ? 'Timeline - Start' : 'start', e.target.value)}
+                  onChange={(e) => handleTaskChange(task, isVCISOTask(task) ? 'Timeline - Start' : 'start', e.target.value)}
                 />
               </TableCell>
               <TableCell>
                 <TextField
                   type="date"
                   value={getEndDate(task)}
-                  onChange={(e) => handleTaskChange(task, 'Timeline - End' in task ? 'Timeline - End' : 'end', e.target.value)}
+                  onChange={(e) => handleTaskChange(task, isVCISOTask(task) ? 'Timeline - End' : 'end', e.target.value)}
                 />
               </TableCell>
               <TableCell>
                 <Select
-                  value={'Status' in task ? (task.Status || '') : task.status}
-                  onChange={(e) => handleTaskChange(task, 'Status' in task ? 'Status' : 'status', e.target.value)}
+                  value={isVCISOTask(task) ? (task.Status || '') : task.status}
+                  onChange={(e) => handleTaskChange(task, isVCISOTask(task) ? 'Status' : 'status', e.target.value)}
                 >
                   <MenuItem value="">Not Set</MenuItem>
                   <MenuItem value="New">New</MenuItem>
@@ -97,10 +101,10 @@ const TaskTable: React.FC = () => {
                   <MenuItem value="Completed">Completed</MenuItem>
                 </Select>
               </TableCell>
-              {!selectedFramework && (
+              {!selectedFramework && isVCISOTask(task) && (
                 <>
-                  <TableCell>{(task as VCISOTask).Package}</TableCell>
-                  <TableCell>{(task as VCISOTask)['Estimated vCISO HR(s)']}</TableCell>
+                  <TableCell>{task.Package}</TableCell>
+                  <TableCell>{task['Estimated vCISO HR(s)']}</TableCell>
                 </>
               )}
             </TableRow>
