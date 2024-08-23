@@ -25,28 +25,28 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
         Build Your Cybersecurity Roadmap
       </Typography>
       <Box my={4}>
-        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'white' }}>
-          <Typography variant="h6" gutterBottom>
+        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'white', borderRadius: '8px' }}>
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
             Select a Framework
           </Typography>
           <FrameworkSelector />
         </Paper>
       </Box>
       <Box my={4}>
-        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'white' }}>
-          <Typography variant="h6" gutterBottom>
+        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'white', borderRadius: '8px' }}>
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
             Roadmap Timeline
           </Typography>
           <RoadmapGanttChart />
         </Paper>
       </Box>
       <Box my={4}>
-        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'white' }}>
-          <Typography variant="h6" gutterBottom>
+        <Paper elevation={0} sx={{ p: 3, backgroundColor: 'white', borderRadius: '8px' }}>
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
             Tasks
           </Typography>
           <TaskTable />
