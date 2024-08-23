@@ -3,9 +3,8 @@ export interface Task {
   name: string;
   start: Date;
   end: Date;
-  status: 'New' | 'In Progress' | 'Completed';
+  status: string;
 }
-
 export interface Framework {
   id: string;
   name: string;
