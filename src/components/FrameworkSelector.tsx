@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
+import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { RootState } from '../redux/store';
 import { selectFramework } from '../redux/roadmapSlice';
 
@@ -13,9 +13,15 @@ const FrameworkSelector: React.FC = () => {
   };
 
   return (
-    <FormControl fullWidth>
-      <InputLabel>Select Framework</InputLabel>
-      <Select value={selectedFramework || ''} onChange={handleChange}>
+    <FormControl fullWidth variant="outlined">
+      <InputLabel id="framework-select-label">Select Framework</InputLabel>
+      <Select
+        labelId="framework-select-label"
+        id="framework-select"
+        value={selectedFramework || ''}
+        onChange={handleChange}
+        label="Select Framework"
+      >
         {frameworks.map((framework) => (
           <MenuItem key={framework.id} value={framework.id}>
             {framework.name}
