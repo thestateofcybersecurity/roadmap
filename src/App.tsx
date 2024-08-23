@@ -1,46 +1,39 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Container, Typography, Box } from '@material-ui/core';
-import FrameworkSelector from './components/FrameworkSelector';
-import RoadmapGanttChart from './components/RoadmapGanttChart';
-import TaskTable from './components/TaskTable';
-import { fetchFrameworks } from './utils/api';
-import { setFrameworks } from './redux/roadmapSlice';
+import React from 'react';
+import { AppProps } from 'next/app';
+import { Provider } from 'react-redux';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
+import Layout from '../components/Layout';
+import { store } from '../redux/store';
 
-const App: React.FC = () => {
-  const dispatch = useDispatch();
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1e3a8a',
+    },
+    secondary: {
+      main: '#10b981',
+    },
+    background: {
+      default: '#f3f4f6',
+    },
+  },
+  typography: {
+    fontFamily: 'Inter, sans-serif',
+  },
+});
 
-  useEffect(() => {
-    const loadFrameworks = async () => {
-      try {
-        const frameworks = await fetchFrameworks();
-        dispatch(setFrameworks(frameworks));
-      } catch (error) {
-        console.error('Failed to fetch frameworks:', error);
-      }
-    };
-
-    loadFrameworks();
-  }, [dispatch]);
-
+function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Container maxWidth="lg">
-      <Box my={4}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Cybersecurity Roadmap Tool
-        </Typography>
-        <Box my={2}>
-          <FrameworkSelector />
-        </Box>
-        <Box my={2}>
-          <RoadmapGanttChart />
-        </Box>
-        <Box my={2}>
-          <TaskTable />
-        </Box>
-      </Box>
-    </Container>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ThemeProvider>
+    </Provider>
   );
-};
+}
 
-export default App;
+export default MyApp;
