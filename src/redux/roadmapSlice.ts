@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RoadmapState, Framework, Task } from '../types';
+import { RoadmapState, Framework, Task } from '../../../src/types';
 
 const initialState: RoadmapState = {
   frameworks: [],
