@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Select, MenuItem } from '@mui/material';
 import { RootState } from '../redux/store';
-import { updateTask } from '../redux/roadmapSlice';
+import { updateTask, updateVCISOTask } from '../redux/roadmapSlice';
 import { Task, VCISOTask } from '../types';
 
 const TaskTable: React.FC = () => {
@@ -15,15 +15,16 @@ const TaskTable: React.FC = () => {
 
   const tasks = selectedFramework ? selectedTasks : vcisoTasks;
 
-  const handleTaskChange = (taskId: string, field: keyof (Task | VCISOTask), value: any) => {
-    if (selectedFramework) {
-      const task = selectedTasks.find(t => t.id === taskId) as Task;
-      if (task) {
-        const updatedTask = { ...task, [field]: value };
-        dispatch(updateTask({ frameworkId: selectedFramework, task: updatedTask }));
-      }
+  const handleTaskChange = (task: Task | VCISOTask, field: string, value: any) => {
+    if ('id' in task) {
+      // This is a regular Task
+      const updatedTask = { ...task, [field]: value };
+      dispatch(updateTask({ frameworkId: selectedFramework!, task: updatedTask }));
+    } else {
+      // This is a VCISOTask
+      const updatedTask = { ...task, [field]: value };
+      dispatch(updateVCISOTask(updatedTask));
     }
-    // For vCISO tasks, we might want to implement a separate update action
   };
 
   return (
@@ -46,27 +47,27 @@ const TaskTable: React.FC = () => {
                 <TextField
                   fullWidth
                   value={'Task' in task ? task.Task : task.name}
-                  onChange={(e) => handleTaskChange('id' in task ? task.id : task.Task, 'Task' in task ? 'Task' : 'name', e.target.value)}
+                  onChange={(e) => handleTaskChange(task, 'Task' in task ? 'Task' : 'name', e.target.value)}
                 />
               </TableCell>
               <TableCell>
                 <TextField
                   type="date"
                   value={'Timeline - Start' in task ? task['Timeline - Start'] : task.start.toISOString().split('T')[0]}
-                  onChange={(e) => handleTaskChange('id' in task ? task.id : task.Task, 'Timeline - Start' in task ? 'Timeline - Start' : 'start', new Date(e.target.value))}
+                  onChange={(e) => handleTaskChange(task, 'Timeline - Start' in task ? 'Timeline - Start' : 'start', new Date(e.target.value))}
                 />
               </TableCell>
               <TableCell>
                 <TextField
                   type="date"
                   value={'Timeline - End' in task ? task['Timeline - End'] : task.end.toISOString().split('T')[0]}
-                  onChange={(e) => handleTaskChange('id' in task ? task.id : task.Task, 'Timeline - End' in task ? 'Timeline - End' : 'end', new Date(e.target.value))}
+                  onChange={(e) => handleTaskChange(task, 'Timeline - End' in task ? 'Timeline - End' : 'end', new Date(e.target.value))}
                 />
               </TableCell>
               <TableCell>
                 <Select
                   value={'Status' in task ? task.Status : task.status}
-                  onChange={(e) => handleTaskChange('id' in task ? task.id : task.Task, 'Status' in task ? 'Status' : 'status', e.target.value)}
+                  onChange={(e) => handleTaskChange(task, 'Status' in task ? 'Status' : 'status', e.target.value)}
                 >
                   <MenuItem value="New">New</MenuItem>
                   <MenuItem value="In Progress">In Progress</MenuItem>
