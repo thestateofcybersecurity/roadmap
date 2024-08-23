@@ -14,12 +14,12 @@ export interface Framework {
 export interface VCISOTask {
   Task: string;
   Description: string;
-  Status?: string;
-  'Timeline - Start'?: string;
-  'Timeline - End'?: string;
   'Estimated vCISO HR(s)': number;
   Package: 'Lean' | 'Standard' | 'Premium';
   Quarter: string;
+  Status?: string;
+  'Timeline - Start'?: string;
+  'Timeline - End'?: string;
 }
 
 export interface RoadmapState {
