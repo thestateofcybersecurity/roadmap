@@ -7,7 +7,7 @@ import Layout from '../components/Layout';
 import { store } from '../redux/store';
 import '../styles/globals.css';
 
-import VCISORoadmap from '../pages/VCISORoadmap'; // Importing the new vCISO Roadmap page
+import VCISORoadmap from '../pages/vciso-roadmap'; // Importing the new vCISO Roadmap page
 
 const theme = createTheme({
   palette: {
