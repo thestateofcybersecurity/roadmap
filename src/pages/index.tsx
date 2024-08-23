@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Typography, Box, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Paper, Typography } from '@mui/material';
 import FrameworkSelector from '../components/FrameworkSelector';
-import RoadmapGanttChart from '../components/RoadmapGanttChart';
-import TaskTable from '../components/TaskTable';
-import { fetchFrameworks } from '../utils/api';
-import { setFrameworks } from '../redux/roadmapSlice';
 
-const Home: React.FC = () => {
-  const dispatch = useDispatch();
+const frameworks = ['NIST CSF', 'CIS', 'ISO 27001']; // Example frameworks
+
+const IndexPage: React.FC = () => {
+  const [selectedFramework, setSelectedFramework] = useState<string | null>(null);
+
+  const handleFrameworkChange = (framework: string) => {
+    setSelectedFramework(framework);
 
   useEffect(() => {
     const loadFrameworks = async () => {
