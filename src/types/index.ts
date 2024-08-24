@@ -40,9 +40,9 @@ export interface CISControl {
   'Security Function': string;
   'Title': string;
   'CIS Safeguard Description': string;
-  'IG1': string | number;
-  'IG2': string | number;
-  'IG3': string | number;
+  'IG1': string | number | null;
+  'IG2': string | number | null;
+  'IG3': string | number | null;
   'RISK': string;
   'ETR': string;
 }
