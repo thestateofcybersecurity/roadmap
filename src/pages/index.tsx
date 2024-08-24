@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box, Paper, Typography, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import FrameworkSelector from '../components/FrameworkSelector';
@@ -10,12 +10,23 @@ import { loadFrameworkData, getFrameworkFilters } from '../utils/frameworkUtils'
 const IndexPage: React.FC = () => {
   const dispatch = useDispatch();
   const { frameworks, selectedFramework, filters } = useSelector((state: RootState) => state.roadmap);
+  const [availableFilters, setAvailableFilters] = useState({
+    riskLevels: [] as string[],
+    implementationGroups: [] as string[]
+  });
 
   useEffect(() => {
     const loadData = async () => {
       if (selectedFramework) {
         const data = await loadFrameworkData(selectedFramework);
         dispatch(setFrameworkData(data));
+        const newFilters = getFrameworkFilters(selectedFramework);
+        setAvailableFilters(newFilters);
+        // Initialize all filters as selected
+        dispatch(setFilters({
+          riskLevels: newFilters.riskLevels,
+          implementationGroups: newFilters.implementationGroups
+        }));
       }
     };
     loadData();
@@ -23,8 +34,6 @@ const IndexPage: React.FC = () => {
 
   const handleFrameworkChange = (framework: string) => {
     dispatch(selectFramework(framework));
-    const newFilters = getFrameworkFilters(framework);
-    dispatch(setFilters(newFilters));
   };
 
   const handleFilterChange = (filterType: 'riskLevels' | 'implementationGroups', value: string) => {
@@ -59,7 +68,7 @@ const IndexPage: React.FC = () => {
             </Typography>
             <FormGroup>
               <Typography variant="h6">Risk Levels</Typography>
-              {filters.riskLevels.map(risk => (
+              {availableFilters.riskLevels.map(risk => (
                 <FormControlLabel
                   key={risk}
                   control={<Checkbox checked={filters.riskLevels.includes(risk)} onChange={() => handleFilterChange('riskLevels', risk)} />}
@@ -69,7 +78,7 @@ const IndexPage: React.FC = () => {
             </FormGroup>
             <FormGroup>
               <Typography variant="h6">Implementation Groups</Typography>
-              {filters.implementationGroups.map(ig => (
+              {availableFilters.implementationGroups.map(ig => (
                 <FormControlLabel
                   key={ig}
                   control={<Checkbox checked={filters.implementationGroups.includes(ig)} onChange={() => handleFilterChange('implementationGroups', ig)} />}
