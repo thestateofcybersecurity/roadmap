@@ -41,7 +41,7 @@ const IndexPage: React.FC = () => {
     if (newFilters[filterType].includes(value)) {
       newFilters[filterType] = newFilters[filterType].filter(item => item !== value);
     } else {
-      newFilters[filterType].push(value);
+      newFilters[filterType] = [...newFilters[filterType], value];
     }
     dispatch(setFilters(newFilters));
   };
