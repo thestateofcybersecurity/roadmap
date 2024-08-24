@@ -25,8 +25,8 @@ export interface VCISOTask {
 export interface RoadmapState {
   frameworks: string[];
   selectedFramework: string | null;
-  vcisoTasks: VCISOTask[];
   frameworkData: CISControl[]; // Add this line
+  vcisoTasks: VCISOTask[];
   filters: {
     riskLevels: string[];
     implementationGroups: string[];
