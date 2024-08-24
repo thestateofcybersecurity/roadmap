@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { Typography, Box, Paper } from '@mui/material';
@@ -6,8 +6,8 @@ import { VCISOTask } from '../types';
 
 const RoadmapGanttChart: React.FC = () => {
   const { vcisoTasks } = useSelector((state: RootState) => state.roadmap);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const taskColumnRef = useRef<HTMLDivElement>(null);
 
   const taskHeight = 30;
   const dayWidth = 20;
@@ -25,15 +25,15 @@ const RoadmapGanttChart: React.FC = () => {
     'Fourth Quarter': '#0088fe',
   };
 
-  const handleScroll = () => {
-    if (scrollContainerRef.current) {
-      setScrollPosition(scrollContainerRef.current.scrollLeft);
-    }
-  };
-
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer) {
+    const taskColumn = taskColumnRef.current;
+
+    if (scrollContainer && taskColumn) {
+      const handleScroll = () => {
+        taskColumn.style.transform = `translateX(${scrollContainer.scrollLeft}px)`;
+      };
+
       scrollContainer.addEventListener('scroll', handleScroll);
       return () => scrollContainer.removeEventListener('scroll', handleScroll);
     }
@@ -44,7 +44,7 @@ const RoadmapGanttChart: React.FC = () => {
     for (let i = 0; i < 12; i++) {
       const monthDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
       months.push(
-        <div key={i} style={{ position: 'absolute', left: i * dayWidth * 30, width: dayWidth * 30, borderLeft: '1px solid #ccc', paddingLeft: 5 }}>
+        <div key={i} style={{ position: 'absolute', left: i * dayWidth * 30, width: dayWidth * 30, borderLeft: '1px solid #ccc', paddingLeft: 5, height: taskHeight }}>
           {monthDate.toLocaleString('default', { month: 'short' })}
         </div>
       );
@@ -60,13 +60,10 @@ const RoadmapGanttChart: React.FC = () => {
       const taskDuration = Math.floor((taskEnd.getTime() - taskStart.getTime()) / (1000 * 60 * 60 * 24));
 
       return (
-        <div key={index} style={{ position: 'absolute', top: index * taskHeight, left: 0, right: 0, height: taskHeight, display: 'flex', alignItems: 'center' }}>
-          <div style={{ width: leftColumnWidth, paddingRight: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {task.Task}
-          </div>
+        <div key={index} style={{ position: 'absolute', top: (index + 1) * taskHeight, height: taskHeight, display: 'flex', alignItems: 'center' }}>
           <div style={{
             position: 'absolute',
-            left: leftColumnWidth + taskStartDays * dayWidth,
+            left: taskStartDays * dayWidth,
             width: taskDuration * dayWidth,
             height: taskHeight - 4,
             backgroundColor: quarterColors[task.Quarter as keyof typeof quarterColors] || '#ccc',
@@ -85,27 +82,44 @@ const RoadmapGanttChart: React.FC = () => {
     <Paper elevation={3} sx={{ p: 2, mb: 3, overflow: 'hidden' }}>
       <Typography variant="h6" gutterBottom>Roadmap Gantt Chart</Typography>
       <Box sx={{ position: 'relative', height: 500, overflow: 'hidden' }}>
-        <div style={{ position: 'sticky', top: 0, left: 0, width: leftColumnWidth, height: 30, backgroundColor: '#f0f0f0', zIndex: 2 }}>
-          Task Name
-        </div>
         <div
           ref={scrollContainerRef}
           style={{
             position: 'absolute',
-            top: 30,
-            left: 0,
+            top: 0,
+            left: leftColumnWidth,
             right: 0,
             bottom: 0,
             overflowX: 'auto',
-            overflowY: 'auto',
+            overflowY: 'hidden',
           }}
         >
-          <div style={{ position: 'relative', width: leftColumnWidth + totalDays * dayWidth, height: vcisoTasks.length * taskHeight }}>
-            <div style={{ position: 'sticky', top: 0, left: leftColumnWidth, height: 30, zIndex: 1 }}>
+          <div style={{ position: 'relative', width: totalDays * dayWidth, height: (vcisoTasks.length + 1) * taskHeight }}>
+            <div style={{ position: 'sticky', top: 0, height: taskHeight, zIndex: 1 }}>
               {renderTimelineHeader()}
             </div>
             {renderTasks()}
           </div>
+        </div>
+        <div
+          ref={taskColumnRef}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: leftColumnWidth,
+            bottom: 0,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            zIndex: 2,
+            backgroundColor: '#f0f0f0',
+          }}
+        >
+          {vcisoTasks.map((task, index) => (
+            <div key={index} style={{ height: taskHeight, display: 'flex', alignItems: 'center', padding: '0 10px', borderBottom: '1px solid #ccc' }}>
+              {task.Task}
+            </div>
+          ))}
         </div>
       </Box>
     </Paper>
