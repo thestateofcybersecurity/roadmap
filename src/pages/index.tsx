@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box, Paper, Typography, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import FrameworkSelector from '../components/FrameworkSelector';
+import TaskTable from '../components/TaskTable';
 import { RootState } from '../redux/store';
 import { selectFramework, setFrameworkData, setFilters } from '../redux/roadmapSlice';
-import { loadFrameworkData, getFrameworkFilters, filterFrameworkData } from '../utils/frameworkUtils';
+import { loadFrameworkData, getFrameworkFilters } from '../utils/frameworkUtils';
 
 const IndexPage: React.FC = () => {
   const dispatch = useDispatch();
-  const { frameworks, selectedFramework, frameworkData, filters } = useSelector((state: RootState) => state.roadmap);
+  const { frameworks, selectedFramework, filters } = useSelector((state: RootState) => state.roadmap);
 
   useEffect(() => {
     const loadData = async () => {
@@ -35,8 +36,6 @@ const IndexPage: React.FC = () => {
     }
     dispatch(setFilters(newFilters));
   };
-
-  const filteredData = filterFrameworkData(frameworkData, filters);
 
   return (
     <Box>
@@ -86,13 +85,7 @@ const IndexPage: React.FC = () => {
           <Typography variant="h5" component="h2" gutterBottom>
             Framework Data
           </Typography>
-          {filteredData.map((item, index) => (
-            <Box key={index} mb={2}>
-              <Typography variant="h6">{item.Title}</Typography>
-              <Typography>Risk: {item.RISK}</Typography>
-              <Typography>Implementation Groups: {['IG1', 'IG2', 'IG3'].filter(ig => item[ig] !== NaN && item[ig] !== '').join(', ')}</Typography>
-            </Box>
-          ))}
+          <TaskTable />
         </Paper>
       </Box>
     </Box>
