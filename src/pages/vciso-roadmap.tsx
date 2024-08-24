@@ -14,6 +14,8 @@ const packages = [
   { name: 'Premium', avgHours: 60 },
 ];
 
+const quarters = ['Onboarding', 'First Quarter', 'Second Quarter', 'Third Quarter', 'Fourth Quarter'];
+
 const VCISORadmap: React.FC = () => {
   const dispatch = useDispatch();
   const { vcisoTasks } = useSelector((state: RootState) => state.roadmap);
@@ -44,34 +46,48 @@ const VCISORadmap: React.FC = () => {
   };
 
   const generateRoadmap = () => {
-    const selectedTasks = allTasks.filter(task => {
-      if (selectedPackage) {
-        return task.Package === selectedPackage;
-      } else {
-        const quarterHours = monthlyHours * 3; // Assuming 3 months per quarter
-        const taskHours = task['Estimated vCISO HR(s)'];
-        return taskHours <= quarterHours * 1.2 && taskHours >= quarterHours * 0.8; // 20% variance
-      }
+    let selectedTasks: VCISOTask[] = [];
+    
+    if (selectedPackage) {
+      const packageIndex = packages.findIndex(p => p.name === selectedPackage);
+      selectedTasks = allTasks.filter(task => 
+        packages.findIndex(p => p.name === task.Package) <= packageIndex
+      );
+    } else {
+      const quarterlyHours = monthlyHours * 3;
+      let remainingHours = quarterlyHours;
+      
+      quarters.forEach(quarter => {
+        const quarterTasks = allTasks
+          .filter(task => task.Quarter === quarter)
+          .sort((a, b) => packages.findIndex(p => p.name === a.Package) - packages.findIndex(p => p.name === b.Package));
+        
+        for (const task of quarterTasks) {
+          if (remainingHours >= task['Estimated vCISO HR(s)']) {
+            selectedTasks.push(task);
+            remainingHours -= task['Estimated vCISO HR(s)'];
+          } else {
+            break;
+          }
+        }
+        
+        remainingHours = quarterlyHours; // Reset for the next quarter
+      });
+    }
+
+    // Add start and end dates to tasks
+    const tasksWithDates = selectedTasks.map(task => {
+      const quarterIndex = quarters.indexOf(task.Quarter);
+      const startDate = new Date(2024, quarterIndex * 3, 1);
+      const endDate = new Date(2024, (quarterIndex + 1) * 3, 0);
+      return {
+        ...task,
+        'Timeline - Start': startDate.toISOString().split('T')[0],
+        'Timeline - End': endDate.toISOString().split('T')[0],
+      };
     });
 
-    // Group tasks by quarter
-    const groupedTasks = selectedTasks.reduce((acc, task) => {
-      if (!acc[task.Quarter]) {
-        acc[task.Quarter] = [];
-      }
-      acc[task.Quarter].push(task);
-      return acc;
-    }, {} as Record<string, VCISOTask[]>);
-
-    // Sort tasks within each quarter by estimated hours
-    Object.keys(groupedTasks).forEach(quarter => {
-      groupedTasks[quarter].sort((a, b) => b['Estimated vCISO HR(s)'] - a['Estimated vCISO HR(s)']);
-    });
-
-    // Flatten the grouped tasks back into an array
-    const sortedTasks = Object.values(groupedTasks).flat();
-
-    dispatch(setVCISOTasks(sortedTasks));
+    dispatch(setVCISOTasks(tasksWithDates));
   };
 
   return (
