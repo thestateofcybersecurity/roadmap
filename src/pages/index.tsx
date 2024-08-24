@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Paper, Typography } from '@mui/material';
+import { 
+  Box, Paper, Typography, Button, Table, TableBody, TableCell, 
+  TableContainer, TableHead, TableRow, Slider, RadioGroup, 
+  FormControlLabel, Radio
+} from '@mui/material';
 import FrameworkSelector from '../components/FrameworkSelector';
 
 type RoadmapTask = {
@@ -781,41 +785,155 @@ const roadmapData: RoadmapData = {
     
 const IndexPage: React.FC = () => {
   const [selectedFramework, setSelectedFramework] = useState<string | null>(null);
+  const [monthlyHours, setMonthlyHours] = useState<number>(40);
+  const [selectedPackage, setSelectedPackage] = useState<string>('');
 
   const handleFrameworkChange = (framework: string) => {
     setSelectedFramework(framework);
   };
 
+  const handleHoursChange = (event: Event, newValue: number | number[]) => {
+    setMonthlyHours(newValue as number);
+    setSelectedPackage('');
+  };
+
+  const handlePackageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedPackage(event.target.value);
+    setMonthlyHours(packages.find(p => p.name === event.target.value)?.avgHours || 40);
+  };
+
+  const generateRoadmap = () => {
+    // Implement roadmap generation logic here
+    console.log('Generating roadmap...');
+  };
+
+  const exportToCSV = () => {
+    if (!selectedFramework || !roadmapData[selectedFramework]) return;
+
+    const tasks = roadmapData[selectedFramework];
+    const headers = ['Task', 'Start Date', 'End Date', 'Assignee', 'Status', 'Risk', 'Sub-control'];
+    const csvContent = [
+      headers.join(','),
+      ...tasks.map(task => [
+        task.task,
+        task.start,
+        task.end,
+        task.assignee,
+        task.status,
+        task.risk,
+        task.subControl
+      ].map(value => `"${value}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${selectedFramework}_Roadmap.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const packages = [
+    { name: 'Lean', avgHours: 20 },
+    { name: 'Standard', avgHours: 40 },
+    { name: 'Premium', avgHours: 60 },
+  ];
+
   return (
     <Box>
       <Box my={4}>
-        <Paper>
+        <Paper elevation={3} sx={{ p: 3 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Select a Framework
+            Cybersecurity Framework Roadmap
           </Typography>
           <FrameworkSelector
             frameworks={frameworks}
             selectedFramework={selectedFramework}
             onFrameworkChange={handleFrameworkChange}
           />
+          <Box sx={{ mt: 2 }}>
+            <Typography gutterBottom>Select monthly hours:</Typography>
+            <Slider
+              value={monthlyHours}
+              onChange={handleHoursChange}
+              aria-labelledby="monthly-hours-slider"
+              valueLabelDisplay="auto"
+              step={10}
+              marks
+              min={10}
+              max={100}
+            />
+          </Box>
+          <Box sx={{ mt: 2 }}>
+            <Typography gutterBottom>Or choose a package:</Typography>
+            <RadioGroup
+              aria-label="package"
+              name="package"
+              value={selectedPackage}
+              onChange={handlePackageChange}
+            >
+              {packages.map((pkg) => (
+                <FormControlLabel 
+                  key={pkg.name} 
+                  value={pkg.name} 
+                  control={<Radio />} 
+                  label={`${pkg.name} (Avg. ${pkg.avgHours} hours/month)`} 
+                />
+              ))}
+            </RadioGroup>
+          </Box>
+          <Box sx={{ mt: 2 }}>
+            <Button variant="contained" color="primary" onClick={generateRoadmap} sx={{ mr: 2 }}>
+              Generate Roadmap
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={exportToCSV} disabled={!selectedFramework}>
+              Export to CSV
+            </Button>
+          </Box>
         </Paper>
       </Box>
-      <Box my={4}>
-        {selectedFramework && roadmapData[selectedFramework] && (
-          <Paper>
+      {selectedFramework && roadmapData[selectedFramework] && (
+        <Box my={4}>
+          <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h5" component="h2" gutterBottom>
               {selectedFramework} Roadmap
             </Typography>
-            <ul>
-              {roadmapData[selectedFramework].map((task, index) => (
-                <li key={index}>
-                  {task.task}: Start Date: {task.start || 'N/A'}, End Date: {task.end || 'N/A'}, Assignee: {task.assignee || 'N/A'}, Status: {task.status}, Risk: {task.risk || 'N/A'}, Sub-control: {task.subControl || 'N/A'}
-                </li>
-              ))}
-            </ul>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Task</TableCell>
+                    <TableCell>Start Date</TableCell>
+                    <TableCell>End Date</TableCell>
+                    <TableCell>Assignee</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Risk</TableCell>
+                    <TableCell>Sub-control</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {roadmapData[selectedFramework].map((task, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{task.task}</TableCell>
+                      <TableCell>{task.start || 'N/A'}</TableCell>
+                      <TableCell>{task.end || 'N/A'}</TableCell>
+                      <TableCell>{task.assignee || 'N/A'}</TableCell>
+                      <TableCell>{task.status}</TableCell>
+                      <TableCell>{task.risk}</TableCell>
+                      <TableCell>{task.subControl}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Paper>
-        )}
-      </Box>
+        </Box>
+      )}
     </Box>
   );
 };
