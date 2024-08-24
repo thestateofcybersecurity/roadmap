@@ -90,11 +90,30 @@ const VCISORadmap: React.FC = () => {
     dispatch(setVCISOTasks(selectedTasks));
   };
 
-  const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(vcisoTasks);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Roadmap");
-    XLSX.writeFile(workbook, "vCISO_Roadmap.xlsx");
+  const exportToCSV = () => {
+    const headers = ['Task', 'Description', 'Quarter', 'Package', 'Estimated vCISO HR(s)'];
+    const csvContent = [
+      headers.join(','),
+      ...vcisoTasks.map(task => [
+        task.Task,
+        task.Description,
+        task.Quarter,
+        task.Package,
+        task['Estimated vCISO HR(s)']
+      ].map(value => `"${value}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'vCISO_Roadmap.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (
@@ -136,8 +155,8 @@ const VCISORadmap: React.FC = () => {
         <Button variant="contained" color="primary" onClick={generateRoadmap} sx={{ mr: 2 }}>
           Generate Roadmap
         </Button>
-        <Button variant="outlined" color="secondary" onClick={exportToExcel} disabled={vcisoTasks.length === 0}>
-          Export to Excel
+        <Button variant="outlined" color="secondary" onClick={exportToCSV} disabled={vcisoTasks.length === 0}>
+          Export to CSV
         </Button>
       </Paper>
       
@@ -156,7 +175,7 @@ const VCISORadmap: React.FC = () => {
             <TableBody>
               {vcisoTasks.map((task, index) => (
                 <TableRow key={index}>
-                  <TableCell component="th" scope="row">{task.Task}</TableCell>
+                  <TableCell>{task.Task}</TableCell>
                   <TableCell>{task.Description}</TableCell>
                   <TableCell>{task.Quarter}</TableCell>
                   <TableCell>{task.Package}</TableCell>
