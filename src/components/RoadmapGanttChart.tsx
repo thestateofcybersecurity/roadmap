@@ -27,7 +27,7 @@ const RoadmapGanttChart: React.FC = () => {
     if (scrollContainer && header && sidebar) {
       const handleScroll = () => {
         header.style.transform = `translateX(-${scrollContainer.scrollLeft}px)`;
-        sidebar.style.transform = `translateY(-${scrollContainer.scrollTop}px)`;
+        sidebar.scrollTop = scrollContainer.scrollTop;
       };
 
       scrollContainer.addEventListener('scroll', handleScroll);
@@ -96,7 +96,7 @@ const RoadmapGanttChart: React.FC = () => {
           left: taskStartDays * cellWidth,
           top: index * cellHeight,
           width: taskDuration * cellWidth,
-          height: cellHeight,
+          height: cellHeight - 1,
           backgroundColor: '#4CAF50',
           borderRadius: 4,
         }} />
@@ -150,18 +150,15 @@ const RoadmapGanttChart: React.FC = () => {
             width: sidebarWidth,
             bottom: 0,
             zIndex: 2,
-            overflow: 'hidden',
+            overflowY: 'scroll',
+            overflowX: 'hidden',
             backgroundColor: '#f0f0f0',
             borderRight: '1px solid #ccc',
           }}
         >
-          <div style={{ position: 'relative', height: vcisoTasks.length * cellHeight }}>
+          <div style={{ height: vcisoTasks.length * cellHeight }}>
             {vcisoTasks.map((task, index) => (
               <div key={index} style={{
-                position: 'absolute',
-                top: index * cellHeight,
-                left: 0,
-                width: '100%',
                 height: cellHeight,
                 borderBottom: '1px solid #ccc',
                 padding: '5px',
