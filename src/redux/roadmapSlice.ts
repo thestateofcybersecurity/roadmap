@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RoadmapState, Framework, Task } from '../types';
+import { RoadmapState, CISControl } from '../types';
 
 const initialState: RoadmapState = {
   frameworks: ['CIS'], // Add more frameworks as needed
   selectedFramework: null,
-  frameworkData: [],
+  frameworkData: [], // Initialize as an empty array
   filters: {
     riskLevels: [],
     implementationGroups: []
@@ -21,7 +21,7 @@ const roadmapSlice = createSlice({
     selectFramework: (state, action: PayloadAction<string>) => {
       state.selectedFramework = action.payload;
     },
-    setFrameworkData: (state, action: PayloadAction<any[]>) => {
+    setFrameworkData: (state, action: PayloadAction<CISControl[]>) => {
       state.frameworkData = action.payload;
     },
     setFilters: (state, action: PayloadAction<{ riskLevels: string[], implementationGroups: string[] }>) => {
