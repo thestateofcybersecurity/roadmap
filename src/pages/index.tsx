@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Box, Paper, Typography, Button, Table, TableBody, TableCell, 
-  TableContainer, TableHead, TableRow, Slider, RadioGroup, 
-  FormControlLabel, Radio
+  TableContainer, TableHead, TableRow, Slider, FormControlLabel, Checkbox
 } from '@mui/material';
 import FrameworkSelector from '../components/FrameworkSelector';
 
@@ -12,7 +11,7 @@ type RoadmapTask = {
   end: string;
   assignee: string;
   status: string;
-  risk: string;
+  risk: 'Critical' | 'High' | 'Medium' | 'Low';
   subControl: number;
 };
 
@@ -783,38 +782,34 @@ const roadmapData: RoadmapData = {
 ]
 };
     
+const riskLevels = ['Critical', 'High', 'Medium', 'Low'];
+
 const IndexPage: React.FC = () => {
   const [selectedFramework, setSelectedFramework] = useState<string | null>(null);
-  const [monthlyHours, setMonthlyHours] = useState<number>(40);
-  const [selectedPackage, setSelectedPackage] = useState<string>('');
+  const [selectedRisks, setSelectedRisks] = useState<string[]>(['Critical', 'High']);
 
   const handleFrameworkChange = (framework: string) => {
     setSelectedFramework(framework);
   };
 
-  const handleHoursChange = (event: Event, newValue: number | number[]) => {
-    setMonthlyHours(newValue as number);
-    setSelectedPackage('');
+  const handleRiskChange = (risk: string) => {
+    setSelectedRisks(prev => 
+      prev.includes(risk) ? prev.filter(r => r !== risk) : [...prev, risk]
+    );
   };
 
-  const handlePackageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedPackage(event.target.value);
-    setMonthlyHours(packages.find(p => p.name === event.target.value)?.avgHours || 40);
-  };
-
-  const generateRoadmap = () => {
-    // Implement roadmap generation logic here
-    console.log('Generating roadmap...');
-  };
+  const filteredTasks = useMemo(() => {
+    if (!selectedFramework || !roadmapData[selectedFramework]) return [];
+    return roadmapData[selectedFramework].filter(task => selectedRisks.includes(task.risk));
+  }, [selectedFramework, selectedRisks]);
 
   const exportToCSV = () => {
     if (!selectedFramework || !roadmapData[selectedFramework]) return;
 
-    const tasks = roadmapData[selectedFramework];
     const headers = ['Task', 'Start Date', 'End Date', 'Assignee', 'Status', 'Risk', 'Sub-control'];
     const csvContent = [
       headers.join(','),
-      ...tasks.map(task => [
+      ...filteredTasks.map(task => [
         task.task,
         task.start,
         task.end,
@@ -838,12 +833,6 @@ const IndexPage: React.FC = () => {
     }
   };
 
-  const packages = [
-    { name: 'Lean', avgHours: 20 },
-    { name: 'Standard', avgHours: 40 },
-    { name: 'Premium', avgHours: 60 },
-  ];
-
   return (
     <Box>
       <Box my={4}>
@@ -857,47 +846,29 @@ const IndexPage: React.FC = () => {
             onFrameworkChange={handleFrameworkChange}
           />
           <Box sx={{ mt: 2 }}>
-            <Typography gutterBottom>Select monthly hours:</Typography>
-            <Slider
-              value={monthlyHours}
-              onChange={handleHoursChange}
-              aria-labelledby="monthly-hours-slider"
-              valueLabelDisplay="auto"
-              step={10}
-              marks
-              min={10}
-              max={100}
-            />
+            <Typography gutterBottom>Select risk levels:</Typography>
+            {riskLevels.map((risk) => (
+              <FormControlLabel
+                key={risk}
+                control={
+                  <Checkbox
+                    checked={selectedRisks.includes(risk)}
+                    onChange={() => handleRiskChange(risk)}
+                    name={risk}
+                  />
+                }
+                label={risk}
+              />
+            ))}
           </Box>
           <Box sx={{ mt: 2 }}>
-            <Typography gutterBottom>Or choose a package:</Typography>
-            <RadioGroup
-              aria-label="package"
-              name="package"
-              value={selectedPackage}
-              onChange={handlePackageChange}
-            >
-              {packages.map((pkg) => (
-                <FormControlLabel 
-                  key={pkg.name} 
-                  value={pkg.name} 
-                  control={<Radio />} 
-                  label={`${pkg.name} (Avg. ${pkg.avgHours} hours/month)`} 
-                />
-              ))}
-            </RadioGroup>
-          </Box>
-          <Box sx={{ mt: 2 }}>
-            <Button variant="contained" color="primary" onClick={generateRoadmap} sx={{ mr: 2 }}>
-              Generate Roadmap
-            </Button>
             <Button variant="outlined" color="secondary" onClick={exportToCSV} disabled={!selectedFramework}>
               Export to CSV
             </Button>
           </Box>
         </Paper>
       </Box>
-      {selectedFramework && roadmapData[selectedFramework] && (
+      {selectedFramework && filteredTasks.length > 0 && (
         <Box my={4}>
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h5" component="h2" gutterBottom>
@@ -917,7 +888,7 @@ const IndexPage: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {roadmapData[selectedFramework].map((task, index) => (
+                  {filteredTasks.map((task, index) => (
                     <TableRow key={index}>
                       <TableCell>{task.task}</TableCell>
                       <TableCell>{task.start || 'N/A'}</TableCell>
