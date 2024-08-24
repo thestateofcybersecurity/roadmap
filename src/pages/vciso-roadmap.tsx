@@ -129,7 +129,6 @@ const VCISORadmap: React.FC = () => {
           Generate Roadmap
         </Button>
       </Paper>
-      <RoadmapGanttChart />
       <TaskTable />
     </Box>
   );
