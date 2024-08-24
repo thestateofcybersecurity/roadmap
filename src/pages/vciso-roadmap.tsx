@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Paper, Slider, Button, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { 
+  Typography, Box, Paper, Slider, Button, RadioGroup, FormControlLabel, Radio,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow
+} from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { setVCISOTasks } from '../redux/roadmapSlice';
 import { fetchVCISOTasks } from '../utils/api';
-import TaskTable from '../components/TaskTable';
 import { VCISOTask } from '../types';
+import * as XLSX from 'xlsx';
 
 const packages = [
   { name: 'Lean', avgHours: 20 },
   { name: 'Standard', avgHours: 40 },
   { name: 'Premium', avgHours: 60 },
 ];
-
-const quarters = ['Onboarding', 'First Quarter', 'Second Quarter', 'Third Quarter', 'Fourth Quarter'];
 
 const VCISORadmap: React.FC = () => {
   const dispatch = useDispatch();
@@ -56,7 +57,7 @@ const VCISORadmap: React.FC = () => {
       const quarterlyHours = monthlyHours * 3;
       let remainingHours = quarterlyHours;
       
-      quarters.forEach(quarter => {
+      ['Onboarding', 'First Quarter', 'Second Quarter', 'Third Quarter', 'Fourth Quarter'].forEach(quarter => {
         const quarterTasks = allTasks
           .filter(task => task.Quarter === quarter)
           .sort((a, b) => packages.findIndex(p => p.name === a.Package) - packages.findIndex(p => p.name === b.Package));
@@ -74,19 +75,14 @@ const VCISORadmap: React.FC = () => {
       });
     }
 
-    // Add start and end dates to tasks
-    const tasksWithDates = selectedTasks.map(task => {
-      const quarterIndex = quarters.indexOf(task.Quarter);
-      const startDate = new Date(2024, quarterIndex * 3, 1);
-      const endDate = new Date(2024, (quarterIndex + 1) * 3, 0);
-      return {
-        ...task,
-        'Timeline - Start': startDate.toISOString().split('T')[0],
-        'Timeline - End': endDate.toISOString().split('T')[0],
-      };
-    });
+    dispatch(setVCISOTasks(selectedTasks));
+  };
 
-    dispatch(setVCISOTasks(tasksWithDates));
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(vcisoTasks);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Roadmap");
+    XLSX.writeFile(workbook, "vCISO_Roadmap.xlsx");
   };
 
   return (
@@ -125,11 +121,40 @@ const VCISORadmap: React.FC = () => {
             ))}
           </RadioGroup>
         </Box>
-        <Button variant="contained" color="primary" onClick={generateRoadmap}>
+        <Button variant="contained" color="primary" onClick={generateRoadmap} sx={{ mr: 2 }}>
           Generate Roadmap
         </Button>
+        <Button variant="outlined" color="secondary" onClick={exportToExcel} disabled={vcisoTasks.length === 0}>
+          Export to Excel
+        </Button>
       </Paper>
-      <TaskTable />
+      
+      {vcisoTasks.length > 0 && (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="roadmap table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Task</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Quarter</TableCell>
+                <TableCell>Package</TableCell>
+                <TableCell>Estimated Hours</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {vcisoTasks.map((task, index) => (
+                <TableRow key={index}>
+                  <TableCell component="th" scope="row">{task.Task}</TableCell>
+                  <TableCell>{task.Description}</TableCell>
+                  <TableCell>{task.Quarter}</TableCell>
+                  <TableCell>{task.Package}</TableCell>
+                  <TableCell>{task['Estimated vCISO HR(s)']}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 };
