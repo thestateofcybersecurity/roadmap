@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Typography, Box, Paper, Slider, Button, RadioGroup, FormControlLabel, Radio,
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow
-} from '@mui/material';
+import { Typography, Box, Paper, Slider, Button, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { setVCISOTasks } from '../redux/roadmapSlice';
