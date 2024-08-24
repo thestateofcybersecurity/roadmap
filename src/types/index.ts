@@ -27,3 +27,17 @@ export interface RoadmapState {
   selectedFramework: string | null;
   vcisoTasks: VCISOTask[];
 }
+
+export interface CISControl {
+  'CIS Control': string;
+  'CIS Sub-Control': number;
+  'Asset Type': string;
+  'Security Function': string;
+  'Title': string;
+  'CIS Safeguard Description': string;
+  'IG1': string | number;
+  'IG2': string | number;
+  'IG3': string | number;
+  'RISK': string;
+  'ETR': string;
+}
