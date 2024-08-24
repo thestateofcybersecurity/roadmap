@@ -27,6 +27,9 @@ export const getFrameworkFilters = (framework: string) => {
 export const filterFrameworkData = (data: CISControl[], filters: { riskLevels: string[], implementationGroups: string[] }) => {
   return data.filter(item => 
     filters.riskLevels.includes(item.RISK) &&
-    filters.implementationGroups.some(ig => item[ig as keyof CISControl] !== NaN && item[ig as keyof CISControl] !== '')
+    filters.implementationGroups.some(ig => {
+      const value = item[ig as keyof CISControl];
+      return value !== null && value !== undefined && value !== '' && !Number.isNaN(value);
+    })
   );
 };
