@@ -7,13 +7,17 @@ import { CISControl } from '../types';
 const TaskTable: React.FC = () => {
   const { selectedFramework, frameworkData, filters } = useSelector((state: RootState) => state.roadmap);
 
+  if (!selectedFramework || !frameworkData) {
+    return <Typography>No data to display. Please select a framework and apply filters.</Typography>;
+  }
+
   const filteredData = frameworkData.filter((item: CISControl) => 
     filters.riskLevels.includes(item.RISK) &&
     filters.implementationGroups.some(ig => item[ig as keyof CISControl] !== NaN && item[ig as keyof CISControl] !== '')
   );
 
-  if (!selectedFramework || filteredData.length === 0) {
-    return <Typography>No data to display. Please select a framework and apply filters.</Typography>;
+  if (filteredData.length === 0) {
+    return <Typography>No data matches the current filters. Please adjust your selection.</Typography>;
   }
 
   return (
