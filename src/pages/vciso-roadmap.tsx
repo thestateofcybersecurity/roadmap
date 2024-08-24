@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { setVCISOTasks } from '../redux/roadmapSlice';
 import { fetchVCISOTasks } from '../utils/api';
-import RoadmapGanttChart from '../components/RoadmapGanttChart';
 import TaskTable from '../components/TaskTable';
 import { VCISOTask } from '../types';
 
