@@ -13,7 +13,10 @@ const TaskTable: React.FC = () => {
 
   const filteredData = frameworkData.filter((item: CISControl) => 
     filters.riskLevels.includes(item.RISK) &&
-    filters.implementationGroups.some(ig => item[ig as keyof CISControl] !== NaN && item[ig as keyof CISControl] !== '')
+    filters.implementationGroups.some(ig => {
+      const value = item[ig as keyof CISControl];
+      return value !== undefined && value !== null && value !== '' && !Number.isNaN(value);
+    })
   );
 
   if (filteredData.length === 0) {
@@ -39,7 +42,10 @@ const TaskTable: React.FC = () => {
               <TableCell>{item.RISK}</TableCell>
               <TableCell>
                 {['IG1', 'IG2', 'IG3']
-                  .filter(ig => item[ig as keyof CISControl] !== NaN && item[ig as keyof CISControl] !== '')
+                  .filter(ig => {
+                    const value = item[ig as keyof CISControl];
+                    return value !== undefined && value !== null && value !== '' && !Number.isNaN(value);
+                  })
                   .join(', ')}
               </TableCell>
               <TableCell>{item['CIS Control']}</TableCell>
