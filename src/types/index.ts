@@ -15,7 +15,7 @@ export interface VCISOTask {
   Task: string;
   Description: string;
   'Estimated vCISO HR(s)': number;
-  Package: 'Lean' | 'Standard' | 'Premium';
+  Package: 'Small' | 'Medium' | 'Large';
   Quarter: string;
   Status?: string;
   'Timeline - Start'?: string;
