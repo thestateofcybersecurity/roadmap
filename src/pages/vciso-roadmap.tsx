@@ -23,9 +23,9 @@ import { VCISOTask } from '../types';
 import * as XLSX from 'xlsx';
 
 const packages = [
-  { name: 'Lean', avgHours: 20 },
-  { name: 'Standard', avgHours: 40 },
-  { name: 'Premium', avgHours: 60 },
+  { name: 'Small', avgHours: 20 },
+  { name: 'Medium', avgHours: 40 },
+  { name: 'Large', avgHours: 60 },
 ];
 
 const VCISORadmap: React.FC = () => {
